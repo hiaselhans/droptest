@@ -12,6 +12,7 @@ export default defineConfig({
     cssMinify: !isUnminified,
     minify: !isUnminified,
   },
+  base: "/droptest",
   plugins: [
     //
     tailwindcss(),
