@@ -127,6 +127,7 @@ export const MainLayout = () => {
           <hr class="border-slate-200" />
 
           {/* Filtered Accel Section */}
+          {/*
           <section>
             <SectionHeader colorClass="bg-blue-600" title="Filtered Acceleration" />
             <AlgorithmInfo
@@ -150,6 +151,7 @@ export const MainLayout = () => {
           </section>
 
           <hr class="border-slate-200" />
+          */}
 
           {/* Jerk Section */}
           <section>

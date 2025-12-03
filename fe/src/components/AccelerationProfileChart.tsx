@@ -219,7 +219,7 @@ export const AccelerationProfileChart = () => {
           type: 'line',
           yAxisIndex: 1,
           showSymbol: false,
-          lineStyle: { width: 2.5 },
+          lineStyle: { width: 0 },
           data: samples.map((s) => [s.timeMs, s.accelFiltered]),
           z: 2,
         },
