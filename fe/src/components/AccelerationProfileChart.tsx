@@ -19,7 +19,7 @@ const COLOR_ACCEL_FILTERED = '#2563eb' // Blue
 const COLOR_ACCEL_WARNING = '#f97316' // Orange - for accel > 42g
 const COLOR_JERK = '#a855f7' // Purple
 const COLOR_JERK_WARNING = '#ef4444' // Red - for |jerk| > 2000
-const COLOR_HIC = '#f7ab30ff' // Orange
+export const COLOR_HIC = '#f7ab30ff' // Orange
 const COLOR_HIC_WARNING = '#eb3939ff' // Red
 const COLOR_RAW = '#16a34a' // Green
 

@@ -21,6 +21,7 @@ export function calculateHIC(
   accelValues: Array<number>,
   windowMs: number,
   sampleRate: number,
+  hicExponent: number,
 ): Array<number> {
   if (windowMs <= 0) {
     throw new Error(`windowMs must be > 0, got ${windowMs}`);
@@ -50,7 +51,7 @@ export function calculateHIC(
       }
       integral /= (i - j + 1); // Average acceleration over the interval
 
-      const hic = deltaT * Math.pow(integral, 2.5);
+      const hic = deltaT * Math.pow(integral, hicExponent);
       if (hic > maxHIC) {
         maxHIC = hic;
       }

@@ -1,6 +1,6 @@
 import { For } from 'solid-js'
 import { uiStore } from '../stores/uiStore'
-import { AccelerationProfileChart } from './AccelerationProfileChart'
+import { AccelerationProfileChart, COLOR_HIC } from './AccelerationProfileChart'
 
 // Local sub-components for DRY code
 const SectionHeader = (props: { colorClass: string; title: string }) => (
@@ -176,7 +176,7 @@ export const MainLayout = () => {
 
           {/* HIC Section */}
           <section>
-            <SectionHeader colorClass="bg-purple-600" title="HIC" />
+            <SectionHeader colorClass="bg-orange-600" title="HIC" />
             <AlgorithmInfo
               lines={[
                 'HIC calculation',
@@ -185,13 +185,23 @@ export const MainLayout = () => {
             />
 
             <SliderControl
+              label="Exponent"
+              value={state().hicExponent}
+              min={1}
+              max={3}
+              step={0.05}
+              unit=""
+              accentColor={COLOR_HIC}
+              onChange={(v) => uiStore.setHICExponent(v)}
+            />
+            <SliderControl
               label="Window Size"
               value={state().hicWindowMs}
               min={5}
               max={51}
               step={2}
               unit="ms"
-              accentColor="#a855f7"
+              accentColor={COLOR_HIC}
               onChange={(v) => uiStore.setHICWindowMs(v)}
             />
           </section>

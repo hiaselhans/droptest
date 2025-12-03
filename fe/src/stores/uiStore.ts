@@ -21,6 +21,7 @@ interface UIState {
   accelCutoffHz: number // Hz
   jerkWindowMs: number // ms
   hicWindowMs: number // ms
+  hicExponent: number // dimensionless
 
   // Visible range and computed peaks
   visibleTimeRange: { min: number; max: number } | null
@@ -40,6 +41,7 @@ function processRawSamples(
   accelCutoffHz: number,
   jerkWindowMs: number,
   hicWindowMs: number,
+  hicExponent: number,
 ): Array<ProcessedSample> {
   if (rawSamples.length === 0) return []
 
@@ -51,11 +53,11 @@ function processRawSamples(
   // 1) Filter acceleration
   const accelFilteredAll = butterworthFilter(accelRawArray, safeCutoff, sampleRateHz, 1)
 
-  // 2) Compute jerk from filtered acceleration
-  const jerkAll = sgFilter(accelFilteredAll, jerkWindowMs, 3, sampleRateHz, 1)
 
   // 3) (Optional) Compute HIC from filtered acceleration - currently not stored per-sample
-  const hicAll = calculateHIC(accelFilteredAll, hicWindowMs, sampleRateHz)
+  const hicAll = calculateHIC(accelRawArray, hicWindowMs, sampleRateHz, hicExponent)
+  // 2) Compute jerk from filtered acceleration
+  const jerkAll = sgFilter(hicAll, jerkWindowMs, 3, sampleRateHz, 1)
 
   const n = rawSamples.length
   let start = 0
@@ -113,6 +115,7 @@ class UIStore {
       accelCutoffHz: 150,
       jerkWindowMs: 15,
       hicWindowMs: 15,
+      hicExponent: 2,
 
       visibleTimeRange: null,
       peakAccel: null,
@@ -159,6 +162,11 @@ class UIStore {
     this.setState('hicWindowMs', clamped)
     this.recomputeProcessedSamples()
   }
+  setHICExponent(val: number) {
+    const clamped = Math.max(1, Math.min(3, val))
+    this.setState('hicExponent', clamped)
+    this.recomputeProcessedSamples()
+  }
 
   async loadFile(file: File) {
     this.setState('error', null)
@@ -201,7 +209,7 @@ class UIStore {
   }
 
   private recomputeProcessedSamples() {
-    const { rawSamples, sampleRateHz, accelCutoffHz, jerkWindowMs, hicWindowMs } = this.state
+    const { rawSamples, sampleRateHz, accelCutoffHz, jerkWindowMs, hicWindowMs, hicExponent } = this.state
 
     if (rawSamples.length === 0) {
       this.setState('processedSamples', [])
@@ -213,7 +221,7 @@ class UIStore {
     }
 
     try {
-      const processed = processRawSamples(rawSamples, sampleRateHz, accelCutoffHz, jerkWindowMs, hicWindowMs)
+      const processed = processRawSamples(rawSamples, sampleRateHz, accelCutoffHz, jerkWindowMs, hicWindowMs, hicExponent)
       this.setState('processedSamples', processed)
 
       // Initialize visible range to full extent, then recompute peaks
